@@ -1,0 +1,121 @@
+
+print("""
+Ardyn Low - S395694
+Theo Rothmann - S366484
+Anupama Regmi - S390132
+""")
+print("="*30)
+
+print("""
+Assignment 2 - Q1""")
+
+#Caesar shift cipher
+#https://courses.cs.washington.edu/courses/cse123/24su/programming-assignments/p1/P1.pdf
+def caesar_shift(encode:int,shift:int,total_chars:int,min_char:int) ->str:
+    shift %= total_chars
+    o = chr(min_char + (encode + shift - min_char) % total_chars)
+    return o
+
+def inverse_caesar_shift(decode:int,shift:int,total_chars:int,min_char:int)->str:
+    shift %= total_chars
+    c = chr(min_char + (decode - shift - min_char + total_chars) % total_chars)
+    return c
+
+def encrypt():
+    with open("raw_text.txt", "r") as f:
+        text = f.read()
+    shift1 = int(input("Enter shift1: "))
+    shift2 = int(input("Enter shift2: "))
+
+    Complete = ""
+
+    for i in text:
+        if i.islower() and 'a' <= i <= 'm':
+            hidden = caesar_shift(ord(i),shift1*shift2,13,ord('a'))
+        elif i.islower() and 'n' <= i <= 'z':
+            hidden = caesar_shift(ord(i),-(shift1+shift2),13,ord('n'))
+        elif i.isupper() and 'A' <= i <= 'M':
+            hidden = caesar_shift(ord(i),-(shift1),13,ord('A'))
+        elif i.isupper() and 'N' <= i <= 'Z':
+            hidden = caesar_shift(ord(i),(shift2**2),13,ord('N'))
+        else:
+            hidden = i
+
+        Complete += str(hidden)
+
+    with open("encrypted_text.txt", "w") as f:
+        f.write(Complete)
+    with open("key.txt","w") as f:
+        f.write(f"{shift1}\n{shift2}")
+
+def decrypt():
+    with open("encrypted_text.txt", "r") as g:
+        text2 = g.read()
+    option = input("Use key file? (y/n):")
+    
+    if option == "y":
+        with open("key.txt","r")as k:
+            key = k.read()
+            shift1, shift2 = map(int, key.strip().split("\n"))
+    elif option == "n":
+        shift1 = int(input("Enter shift1: "))
+        shift2 = int(input("Enter shift2: "))
+    else:
+        print("Invalid input")
+        return
+    
+    Decode = ""
+    for i in text2:
+
+        undo=i
+        if i.islower() and 'a' <= i <= 'm':
+            undo = inverse_caesar_shift(ord(i),shift1* shift2,13,ord('a'))
+        elif i.islower() and 'n' <= i <= 'z':
+            undo = inverse_caesar_shift(ord(i),-(shift1+shift2),13,ord('n'))
+        elif i.isupper() and 'A' <= i <= 'M':
+            undo = inverse_caesar_shift(ord(i),-(shift1),13,ord('A'))
+        elif i.isupper() and 'N' <= i <= 'Z':
+            undo = inverse_caesar_shift(ord(i),(shift2**2),13,ord('N'))
+
+        Decode += undo
+
+    with open("decrypted_text.txt", "w") as g:
+        g.write(Decode)
+ 
+def verify():
+    with open("raw_text.txt", "r") as raw:
+        original = raw.read()
+
+    with open("decrypted_text.txt", "r") as dec:
+        decrypted = dec.read()
+
+    if original == decrypted:
+        print("Decryption successful")
+    else:
+        print("Decryption failed")    
+
+while True:
+    Q1 = input("Enter e (encrypt), d (decrypt), v (verify): p (exit) :")
+    if Q1 == "e":
+        encrypt()
+    elif Q1 == "d":
+        decrypt()
+    elif Q1 == "v":
+        verify()
+    elif Q1 == "p":
+        print("Program ended.")
+        break
+    else:
+        print("Invalid input")
+an access it
+      - uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
