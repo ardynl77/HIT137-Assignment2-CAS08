@@ -1,4 +1,5 @@
 
+print("="*30)
 print("""
 Ardyn Low - S395694
 Theo Rothmann - S366484
@@ -8,14 +9,19 @@ print("="*30)
 
 print("""
 Assignment 2 - Q1""")
+print()
 
-#Caesar shift cipher
-#https://courses.cs.washington.edu/courses/cse123/24su/programming-assignments/p1/P1.pdf
+#read file from this file directory
+import os
+print("Running from:", os.getcwd())
+print("This script:", os.path.abspath(__file__))
+
+#caesar shift to solve the loop problem, adjust initial formulas
 def caesar_shift(encode:int,shift:int,total_chars:int,min_char:int) ->str:
     shift %= total_chars
     o = chr(min_char + (encode + shift - min_char) % total_chars)
     return o
-
+#decrypt caesarshift
 def inverse_caesar_shift(decode:int,shift:int,total_chars:int,min_char:int)->str:
     shift %= total_chars
     c = chr(min_char + (decode - shift - min_char + total_chars) % total_chars)
@@ -24,11 +30,13 @@ def inverse_caesar_shift(decode:int,shift:int,total_chars:int,min_char:int)->str
 def encrypt():
     with open("raw_text.txt", "r") as f:
         text = f.read()
+
+
     shift1 = int(input("Enter shift1: "))
     shift2 = int(input("Enter shift2: "))
-
+#Container
     Complete = ""
-
+#Encrypt Ruleset
     for i in text:
         if i.islower() and 'a' <= i <= 'm':
             hidden = caesar_shift(ord(i),shift1*shift2,13,ord('a'))
@@ -41,8 +49,8 @@ def encrypt():
         else:
             hidden = i
 
-        Complete += str(hidden)
-
+        Complete += str(hidden) #check if output is string
+#Write Function
     with open("encrypted_text.txt", "w") as f:
         f.write(Complete)
     with open("key.txt","w") as f:
@@ -53,7 +61,7 @@ def decrypt():
         text2 = g.read()
     option = input("Use key file? (y/n):")
     
-    if option == "y":
+    if option == "y": # For Convinience if user forget their key. 
         with open("key.txt","r")as k:
             key = k.read()
             shift1, shift2 = map(int, key.strip().split("\n"))
@@ -63,11 +71,11 @@ def decrypt():
     else:
         print("Invalid input")
         return
-    
     Decode = ""
+#Decrypt Rules
     for i in text2:
-
         undo=i
+
         if i.islower() and 'a' <= i <= 'm':
             undo = inverse_caesar_shift(ord(i),shift1* shift2,13,ord('a'))
         elif i.islower() and 'n' <= i <= 'z':
@@ -79,7 +87,9 @@ def decrypt():
 
         Decode += undo
 
+
     with open("decrypted_text.txt", "w") as g:
+
         g.write(Decode)
  
 def verify():
@@ -93,9 +103,9 @@ def verify():
         print("Decryption successful")
     else:
         print("Decryption failed")    
-
+#Code Start
 while True:
-    Q1 = input("Enter e (encrypt), d (decrypt), v (verify): p (exit) :")
+    Q1 = input("Enter e (encrypt), d (decrypt), v (verify): p (exit): ")
     if Q1 == "e":
         encrypt()
     elif Q1 == "d":
@@ -107,15 +117,4 @@ while True:
         break
     else:
         print("Invalid input")
-an access it
-      - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
